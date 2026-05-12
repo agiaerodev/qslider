@@ -13,17 +13,17 @@ export default {
         entityName: config('main.qslider.entityNames.slide'),
         apiRoute: 'apiRoutes.qslider.slides',
         permission: 'slider.slides',
-        extraFormFields: 'Slider.crud-fields.slides',
+        //extraFormFields: 'Slider.crud-fields.slides',
         create: {
           title: this.$tr('slider.cms.newSlide'),
         },
         read: {
           columns: [],
-          requestParams: {},
+          //requestParams: { include: 'files' },
         },
         update: {
           title: this.$tr('slider.cms.updateSlide'),
-          requestParams: { include: 'locatable' },
+          requestParams: { include: 'files' },
         },
         delete: true,
         formLeft: {
@@ -32,170 +32,88 @@ export default {
           title: {
             value: '',
             type: 'input',
-            isTranslatable: true,
+            isTranslatable: false,
             props: {
               label: `${this.$tr('isite.cms.form.title')}`,
             },
-          },
-          caption: {
-            value: '',
-            type: 'input',
-            isTranslatable: true,
-            props: { label: this.$tr('slider.cms.label.buttonText') },
-          },
-          uri: {
-            value: '',
-            type: 'input',
-            isTranslatable: true,
-            props: {
-              label: 'URI',
-            },
-          },
+          },          
+          
           url: {
             value: '',
             type: 'input',
-            isTranslatable: true,
+            isTranslatable: false,
             props: {
               label: 'URL',
             },
           },
-          externalImageUrl: {
-            value: '',
-            type: 'input',
-            isTranslatable: true,
-            props: {
-              label: `${this.$tr('isite.cms.form.image')}`,
-            },
-          },
+          
           summary: {
             value: '',
             type: 'input',
-            isTranslatable: true,
+            isTranslatable: false,
             props: {
               type: 'textarea',
               label: `${this.$tr('isite.cms.form.summary')}`,
             },
           },
-          customHtml: {
+          description: {
             value: '',
             type: 'html',
-            isTranslatable: true,
+            isTranslatable: false,
             props: {
               label: `${this.$tr('isite.cms.form.description')}`,
             },
           },
         },
         formRight: {
-          active: {
-            value: '1',
+          status: {
+            value: true,
             type: 'select',
-            isTranslatable: true,
+            isTranslatable: false,
             props: {
               label: this.$tr('isite.cms.form.status'),
               options: [
-                { label: this.$tr('isite.cms.label.enabled'), value: '1' },
-                { label: this.$tr('isite.cms.label.disabled'), value: '0' },
+                { label: this.$tr('isite.cms.label.enabled'), value: true },
+                { label: this.$tr('isite.cms.label.disabled'), value: false },
               ],
             },
           },
-          targetField: {
-            name: 'target',
+          target: {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('isite.cms.form.option'),
-              options: [
-                { label: 'Same tab', value: '_self' },
+              label: 'Target:',
+              options: [                
                 { label: 'New tab', value: '_blank' },
+                { label: 'Same tab', value: '_self' },
               ],
             },
           },
-          typeField: {
-            name: 'type',
+          buttonsType: {
             value: null,
             type: 'select',
             props: {
-              label: this.$tr('isite.cms.form.type'),
-              options: [
-                { label: 'Auto', value: 'auto' },
-                { label: '360', value: '360' },
-                { label: 'Video', value: 'video' },
-                { label: 'Image', value: 'image' },
+              label: 'Buttons Type:',
+              options: [                
+                { label: 'Type-1', value: 'type_1' },
+                { label: 'Type-2', value: 'type_2' },
               ],
             },
-          },
-          responsive: {
-            value: '1',
-            type: 'select',
-            props: {
-              label: this.$tr('isite.cms.label.responsive'),
-              options: [
-                {
-                  label: `${this.$tr('isite.cms.label.mobile')} & PC`,
-                  value: '1',
-                },
-                { label: 'PC', value: '2' },
-                { label: this.$tr('isite.cms.label.mobile'), value: '3' },
-              ],
-            },
-          },
-          countryId: {
+          },       
+
+          buttons: {          
+            type: 'json',
+            props: {label: 'Buttons'}
+          }, 
+          
+          mainimage: {
             value: null,
-            type: 'select',
-            fakeFieldName: 'locatable',
+            type: 'attachFiles',
             props: {
-              label: this.$tr('isite.cms.label.country'),
-              clearable: true,
-            },
-            loadOptions: {
-              apiRoute: 'apiRoutes.qlocations.countries',
-              select: { label: 'name', id: 'id' },
-            },
-          },
-          provinceId: {
-            value: null,
-            type: 'select',
-            fakeFieldName: 'locatable',
-            props: {
-              label: this.$tr('isite.cms.label.department'),
-              readonly: this.crudInfo.locatable?.countryId ? false : true,
-              clearable: true,
-            },
-            loadOptions: {
-              apiRoute: this.crudInfo.locatable?.countryId
-                ? 'apiRoutes.qlocations.provinces'
-                : false,
-              select: { label: 'name', id: 'id' },
-              requestParams: { filter: { country: this.crudInfo.locatable?.countryId } },
-            },
-          },
-          cityId: {
-            value: null,
-            type: 'select',
-            fakeFieldName: 'locatable',
-            props: {
-              label: this.$tr('isite.cms.form.city'),
-              readonly: this.crudInfo.locatable?.provinceId ? false : true,
-              clearable: true,
-            },
-            loadOptions: {
-              apiRoute: this.crudInfo.locatable?.provinceId
-                ? 'apiRoutes.qlocations.cities'
-                : false,
-              select: { label: 'name', id: 'id' },
-              requestParams: {
-                filter: { province_id: this.crudInfo.locatable?.provinceId },
-              },
-            },
-          },
-          mediasSingle: {
-            value: {},
-            type: 'media',
-            props: {
-              label: this.$tr('isite.cms.form.image'),
-              zone: 'slideimage',
-              entity: 'Modules\\Slider\\Entities\\Slide',
-              entityId: null,
+              zone: 'mainimage',
+              entityType: 'Idata.Entities.Slider.Slide',
+              type: 'attachFiles',
+              class: 'tw-py-4 tw-justify-center',
             },
           },
         },

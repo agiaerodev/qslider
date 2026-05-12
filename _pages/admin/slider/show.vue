@@ -68,7 +68,7 @@
           params: {}
         }
         this.loading = true
-        this.$crud.show('apiRoutes.qslider.sliders', criteria, params).then( response => {
+        this.$crud.show('apiRoutes.qslider.sliders', criteria, params).then( response => {z
           this.slider =  response.data
           this.loading = false
         }).catch( error => {

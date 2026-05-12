@@ -15,35 +15,24 @@
           :rules="[val => !!val || $tr('isite.cms.message.fieldRequired')]"
           v-model="form.name"/>
         <q-input
-          :label="`${$tr('isite.cms.form.slug')} *`"
+          :label="`${$tr('isite.cms.form.systemName')} *`"
           type="text"
           outlined
           dense
-          readonly
-          :rules="[val => !!val || $tr('isite.cms.message.fieldRequired')]"
           v-model="form.systemName"/>
         <q-select
+          v-if="false"
           :label="$tr('isite.cms.form.status')"
-          v-model="form.active"
+          v-model="form.status"
           emit-value
           map-options
           :options="[
-            {label : $tr('isite.cms.label.enabled'), value : 1},
-            {label : $tr('isite.cms.label.disabled'), value : 0},
+            {label : $tr('isite.cms.label.enabled'), value : true},
+            {label : $tr('isite.cms.label.disabled'), value : false},
           ]"
           outlined
           dense/>
-        <q-select
-          :label="$tr('isite.cms.form.type')"
-          v-model="form.type"
-          emit-value
-          map-options
-          :options="[
-            {label : $tr('slider.cms.form.slider'), value : 'slider'},
-            {label : $tr('slider.cms.form.banner'), value : 'banner'},
-          ]"
-          outlined
-          dense/>
+        
       </q-form>
       <div class="text-right">
         <q-btn
@@ -104,9 +93,15 @@
         this.form.options = this.$clone(options)
       },
       updateOrCreateSlider(data) {
+
+        const sliderData =  {
+          name: data.name,
+          systemName: data.systemName, 
+          status: data.status
+        } 
         this.loading = true
         if (this.form.id) {
-          this.$crud.update('apiRoutes.qslider.sliders', data.id, data).then(response => {
+          this.$crud.update('apiRoutes.qslider.sliders', data.id, sliderData).then(response => {
             this.$alert.info({message: this.$tr('isite.cms.message.recordUpdated')})
             this.loading = false
           }).catch(error => {
