@@ -14,6 +14,7 @@
         v-model="slider.slides"
         group="slides"
         item-key="id"
+        class="tw-cursor-grabbing"
       >
         <template #item="{ element, index }">
           <q-card
@@ -58,12 +59,12 @@
               <div
                 v-else
                 :style="`
-        background: url('${element.mediaFiles.slideimage ? element.mediaFiles.slideimage.mediumThumb : ''}');
-        background-size: cover;
-        background-position: center;
-        height: 300px;
-        display: block;
-        max-width: 100%;`">
+                  background: url('${element.mediaFiles.slideimage ? element.mediaFiles.slideimage.mediumThumb : ''}');
+                  background-size: cover;
+                  background-position: center;
+                  height: 300px;
+                  display: block;
+                  max-width: 100%;`">
               </div>
             </div>
             <div class="full-width" v-else-if="element.url">
@@ -86,6 +87,18 @@
                 <source :src="element.url" type='video/mp4'>
               </video>
             </div>
+
+            <div class="full-width" v-if="hasMainImage(element)">
+              <div                
+                :style="`
+                  background: url('${hasMainImage(element)}');
+                  background-size: cover;
+                  background-position: center;
+                  height: 300px;
+                  display: block;
+                  max-width: 100%;`">
+              </div>
+            </div>
           </q-card>
         </template>
         <!--Item-->
@@ -100,11 +113,14 @@
 import renderMedia from 'modules/qslider/_components/admin/slide/renderMedia'
 import draggable from 'vuedraggable'
 import { eventBus } from 'src/plugins/utils'
+import avatar from 'modules/qsite/_components/master/avatar/index.vue';
+import baseService from 'modules/qcrud/_services/baseService'
 
 export default {
   components: {
     draggable,
-    renderMedia
+    renderMedia, 
+    avatar
   },
   mounted() {
     this.init()
@@ -174,13 +190,14 @@ export default {
       let slides = this.slider.slides.map(slide => ({id: slide.id}))
       console.error(slides)
     },
-    updateOrderSlides() {
-      let slides = this.slider.slides.map(slide => ({id: slide.id}))
-      let data = {
-        slider: slides
-      }
+    updateOrderSlides() {      
+      const slides = Object.fromEntries(
+        this.slider.slides.map((item, index) => [index, item.id])
+      )
+      
       this.loading = true
-      this.$crud.create('apiRoutes.qslider.orderSlides', data).then(response => {
+      //this.$crud.update('apiRoutes.qslider.orderSlides', null, slides).then(response => {
+      baseService.put('apiRoutes.qslider.orderSlides', { attributes: slides}).then(response => {
         this.$alert.success({message: `${this.$tr('isite.cms.message.recordUpdated')}`})
         this.loading = false
       }).catch(error => {
@@ -207,6 +224,10 @@ export default {
       }).onCancel(() => {
       })
     },
+    
+    hasMainImage(item){
+      return  item?.mainimageUrl || false
+    }
   }
 }
 </script>

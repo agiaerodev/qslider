@@ -65,7 +65,7 @@
         let criteria = this.$route.params.id
         let params = {
           refresh,
-          params: {}
+          requestParams: { include: 'slides' },
         }
         this.loading = true
         this.$crud.show('apiRoutes.qslider.sliders', criteria, params).then( response => {z

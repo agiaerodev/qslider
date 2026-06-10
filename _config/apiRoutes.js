@@ -8,5 +8,5 @@ export default {
   version: moduleVersion,
   sliders: `${urlBase}/sliders`,
   slides: `${urlBase}/slides`,
-  orderSlides: `${urlBase}/sliders/order-slides`
+  orderSlides: `${urlBase}/slides/order`
 }
